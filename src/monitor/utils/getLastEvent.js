@@ -9,5 +9,6 @@ let lastEvent;
 })
 
 export default function (){
+    //闭包，实现lastEvent持久化
     return lastEvent;
 }
