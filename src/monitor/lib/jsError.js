@@ -11,7 +11,6 @@ export function injectJsError() {
       kind: "stability",//监控指标的大类
       type: "error",// 小类型，这是一个错误
       errorType: "jsError",
-      url: "",//路由报错的地址
       message: event.message,//报错信息
       filename: event.filename,//哪个文件报错
       position: `${event.lineno}:${event.colno}`,//代码的行和列
@@ -20,6 +19,7 @@ export function injectJsError() {
     }
     tracker.send(log)
   }, true);
+
 
   window.addEventListener("unhandledrejection", (event) => {
     //1.获取最后的触发事件event信息
@@ -30,7 +30,6 @@ export function injectJsError() {
     let column = 0;
     let stack = "";
     let reason = event.reason;
-    console.log("event.reason.stack", reason);
     if (typeof reason == "string") {//promise中没有catch到的错误
       message = reason;
     } else if (typeof reason == "object") {//说明是一个错误对象
@@ -48,19 +47,20 @@ export function injectJsError() {
         column = matchResult[3];
         console.log(matchResult);
       }
+      message = reason.message;
       stack = getLines(reason.stack);
 
     }
+
     let log = {
       kind: "stability",//监控指标的大类
       type: "error",// 小类型，这是一个错误
       errorType: "promiseError",
-      url: "",//路由报错的地址
       message,//报错信息
       filename,//哪个文件报错
       position: `${line}:${column}`,//代码的行和列
       stack,
-      selector: lastEvent ? getSelector(lastEvent.composedPath()) : '',//代表最后一个操作的元素
+      selector: lastEvent ? getSelector(lastEvent.path ? lastEvent.path : lastEvent.composedPath()) : '',//代表最后一个操作的元素
     }
     tracker.send(log)
   }, true)
