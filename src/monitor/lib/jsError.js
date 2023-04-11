@@ -5,19 +5,38 @@ import tracker from "../utils/tracker";
 
 export function injectJsError() {
   window.addEventListener("error", function (event) {
-    let lastEvent = getlastEvent();// 获取最后一个交互事件
-    //这里获取的event为错误事件，需要点击事件去获取选择的元素
-    let log = {
-      kind: "stability",//监控指标的大类
-      type: "error",// 小类型，这是一个错误
-      errorType: "jsError",
-      message: event.message,//报错信息
-      filename: event.filename,//哪个文件报错
-      position: `${event.lineno}:${event.colno}`,//代码的行和列
-      stack: getLines(event.error.stack),
-      selector: lastEvent ? getSelector(lastEvent.composedPath()) : '',//代表最后一个操作的元素
+    let lastEvent = getlastEvent();
+    let log;
+    // <script> <link>标签加载出错也会触发error
+    if(event.target && (event.target.src || event.target.href)){
+        //src是script标签的属性，href为link标签的属性
+         log = {
+            kind: "stability",//监控指标的大类
+            type: "error",// 小类型，这是一个错误
+            message: event,
+            errorType: "resourceError",
+            filename: event.target.src || event.target.href,//哪个文件报错
+            tagName:event.target.tagName,
+            selector: getSelector(event.target),//代表最后一个操作的元素
+          }
+    }else{
+        log = {
+            kind: "stability",//监控指标的大类
+            type: "error",// 小类型，这是一个错误
+            errorType: "jsError",
+            message: event.message,//报错信息
+            filename: event.filename,//哪个文件报错
+            position: `${event.lineno}:${event.colno}`,//代码的行和列
+            stack: getLines(event.error.stack),
+            selector: lastEvent ? getSelector(lastEvent.composedPath()) : '',//代表最后一个操作的元素
+          }
     }
-    tracker.send(log)
+    //<script> <link>标签加载出错
+    console.log("error",event);
+// 获取最后一个交互事件
+    //这里获取的event为错误事件，需要点击事件去获取选择的元素
+    
+    // tracker.send(log);
   }, true);
 
 

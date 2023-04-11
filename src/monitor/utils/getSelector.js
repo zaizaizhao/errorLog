@@ -11,9 +11,16 @@ function getSelector(path){
         }
     }).join(" ")
 }
-export default function(path){
-
-    if(Array.isArray(path)){
-        return getSelector(path);
+export default function(pathOrTarget){
+    //pathOrTarget可能是个数组或者对象
+    if(Array.isArray(pathOrTarget)){
+        return getSelector(pathOrTarget);
+    }else{
+        let path = [];
+        while(pathOrTarget){
+            path.push(pathOrTarget);
+            pathOrTarget = pathOrTarget.parentNode;
+        }
+        return getSelector(path)
     }
 }
