@@ -19,7 +19,7 @@ npm run dev
 ```
 > 白屏埋点原理
 ####  __*如何检测白屏*__
-![Alt text](src/images/%E7%99%BD%E5%B1%8F.png)
+![Alt text](images/%E7%99%BD%E5%B1%8F.png)
 ##### 页面中放几个point，通过DocumentOrShadowRoot.elementsFromPoint()来监听这些点的元素数组是否是body。
 
 ## Author
