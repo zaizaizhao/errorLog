@@ -8,8 +8,11 @@
   <title>前端监控SDK</title>
   <style>
     #container {
+      /* width: 100vw;
+      height: 50vh; */
+    }
+    .main {
       width: 100vw;
-      height: 50vh;
     }
   </style>
 </head>
@@ -21,9 +24,11 @@
       <input id="promiseErrorBtn" type="button" value="点击抛出Promise错误" onclick="promiseErrorClick()" />
       <input id="successBtn" type="button" value="ajax成功请求" onclick="sendSuccess()">
       <input id="errorBtn" type="button" value="ajax失败请求" onclick="sendError()">
+      <div class="main"> </div>
     </div>
   </div>
   <script>
+    // document.querySelector(".main").innerHTML = '<span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><br/>'.repeat(10000)
     function errorClick() {
       window.someVar.error = 'error'
     }
