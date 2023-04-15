@@ -19,7 +19,7 @@ module.exports = {
 
       // 如果你想在所有其他中间件之前运行一个中间件或者当你从 `onBeforeSetupMiddleware` 配置项迁移时，
       // 可以使用 `unshift` 方法
-      middlewares.unshift({
+      middlewares.push({
         name: "",
         // `path` 是可选的
         path: '/success',
