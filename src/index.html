@@ -28,6 +28,13 @@
     </div>
   </div>
   <script>
+    //Dom解析完成后触发，即使加载的依赖资源没有加载完成
+    // document.addEventListener("DOMContentLoaded",() => {
+    //   let start = Date.now();
+    //   while(Date.now() - start < 1000){
+
+    //   }
+    // })
     // document.querySelector(".main").innerHTML = '<span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><br/>'.repeat(10000)
     function errorClick() {
       window.someVar.error = 'error'
