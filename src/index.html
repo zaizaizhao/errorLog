@@ -11,6 +11,7 @@
       /* width: 100vw;
       height: 50vh; */
     }
+
     .main {
       width: 100vw;
     }
@@ -71,6 +72,15 @@
       }
       xhr.send("name=mthyd")
     }
+
+    //使用元素计时API：elementtiming
+    const content = document.querySelector(".content");
+    setTimeout(() => {
+      const h1 = document.createElement('h1');
+      h1.innerHTML = '使用元素计时API：elementtiming来检测页面';
+      h1.setAttribute("elementtiming", "meaningful");
+      content.appendChild(h1);
+    }, 2000)
   </script>
   <!-- <script defer src="someError.js"></script> -->
   <!--资源加载报错  通过error事件捕获-->
