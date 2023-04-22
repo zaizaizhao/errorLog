@@ -1,37 +1,49 @@
 import tracker from "../utils/tracker";
 import onload from "../utils/onload";
+import getLastEvent from "../utils/getLastEvent";
+import getSelector from "../utils/getSelector";
 
 export function timing() {
-  console.log(performance);
-
   let FMP, LCP;
-  var ob = new PerformanceObserver((entryList) => {
-    for (const entry of entryList.getEntriesByName('first-contentful-paint')) {
-      const { startTime } = entry;
-      console.log('[assets-load-monitor] PerformanceObserver fcp:', startTime);
+  //监控FMP
+  new PerformanceObserver((entryList, observer) => {
+    let perfEntries = entryList.getEntries();
+    FMP = perfEntries[0];
+    observer.disconnect()
+  }).observe({ entryTypes: ['element'] });
 
-      // 上报startTime操作
+  //监控LCP
+  new PerformanceObserver((entryList, observer) => {
+    let perfEntries = entryList.getEntries();
+    LCP = perfEntries[0];
+    observer.disconnect()
+  }).observe({ entryTypes: ['largest-contentful-paint'] });
+
+  //检测first-input-delay FID
+  new PerformanceObserver((entryList, observer) => {
+    let lastEvent = getLastEvent();
+    console.log("lastEvent",lastEvent,lastEvent.composedPath(),lastEvent.path);
+    let firstInput = entryList.getEntries()[0];
+    console.log("firstInput",firstInput);
+    if(firstInput){
+      //processingStart是开始处理的时间，startTime是事件触发的时间，差值就是处理的延迟
+      let inputDelay = firstInput.processingStart - firstInput.startTime;
+      let duration = firstInput.duration;
+      if(inputDelay > 0 || duration > 0){
+          tracker.send({
+          kind: "experience",//用户体验指标
+          type: "timing",//统计每个阶段的时间
+          inputDelay,//处理的延迟
+          duration,
+          startTime:firstInput.startTime,
+          selector: lastEvent ? getSelector(lastEvent.target) : ''
+        })
+      }
+
     }
-  });
-  ob.observe({ entryTypes: ["mark"] });
-  // ob.observe({ entryTypes: ['element'] })
-  console.log(ob);
+   
+  }).observe({ type:"first-input",buffered:true });
 
-  // new PerformanceObserver((entryList, observer) => {
-  //   console.log("---", entryList);
-
-  //   let perfEntries = entryList.getEntries();
-  //   console.log(perfEntries);
-
-  //   FMP = perfEntries[0];
-  //   observer.disconnect()
-  // }).observe({ entryTypes: ['element'] });
-
-  // new PerformanceObserver((entryList, observer) => {
-  //   let perfEntries = entryList.getEntries();
-  //   LCP = perfEntries[0];
-  //   observer.disconnect()
-  // }).observe({ entryTypes: ['largest-contentful-paint'] });
 
   onload(function () {
     setTimeout(() => {
@@ -63,11 +75,16 @@ export function timing() {
       //   loadTime: loadEventStart - fetchStart,//完整的加载时间
       // })
       let FP = performance.getEntriesByName("first-paint")[0];
+      console.log(FP);
       let FCP = performance.getEntriesByName("first-contentful-paint")[0];
-      console.log("FP", FP);
-      console.log("FCP", FCP);
-      console.log("FMP", FMP);
-      console.log("LCP", LCP);
+      tracker.send({
+        kind: "experience",//用户体验指标
+        type: "paintTiming",//统计绘制的时间
+        firstPaint: FP.startTime,
+        firstMeaningfulPaint: FMP.startTime,
+        firstContentfulPaint: FCP.startTime,
+        largetstContentfulPaint: LCP.startTime,
+      })
     }, 3000)
   })
 }

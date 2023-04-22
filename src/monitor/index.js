@@ -5,5 +5,5 @@ import {timing} from "./lib/timing";
 
 injectJsError();
 injectXHR();
-blankScreen();
+// blankScreen();
 timing();

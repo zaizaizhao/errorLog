@@ -20,15 +20,24 @@
 
 <body>
   <div id="container">
-    <div class="content">
-      <input id="errorBtn" type="button" value="点击抛出错误" onclick="errorClick()" />
+    <div class="content" >
+      <p style="color:red">hello</p>
+      <!-- <input type="text"> -->
+      <button id="clickBtn" onclick="testFID()">测试FID</button>
+      <!-- <input id="errorBtn" type="button" value="点击抛出错误" onclick="errorClick()" />
       <input id="promiseErrorBtn" type="button" value="点击抛出Promise错误" onclick="promiseErrorClick()" />
       <input id="successBtn" type="button" value="ajax成功请求" onclick="sendSuccess()">
-      <input id="errorBtn" type="button" value="ajax失败请求" onclick="sendError()">
+      <input id="errorBtn" type="button" value="ajax失败请求" onclick="sendError()"> -->
       <div class="main"> </div>
     </div>
   </div>
   <script>
+    function testFID(){
+      let start = Date.now();
+      while(Date.now() - start < 1000){
+
+      }
+    }
     //Dom解析完成后触发，即使加载的依赖资源没有加载完成
     // document.addEventListener("DOMContentLoaded",() => {
     //   let start = Date.now();
@@ -78,7 +87,7 @@
     setTimeout(() => {
       const h1 = document.createElement('h1');
       h1.innerHTML = '使用元素计时API：elementtiming来检测页面';
-      h1.setAttribute("elementtiming", "meaningful");
+      h1.setAttribute("elementtiming", "有意义的");
       content.appendChild(h1);
     }, 2000)
   </script>
